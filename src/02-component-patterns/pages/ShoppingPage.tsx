@@ -1,15 +1,25 @@
-import { ProductCard, ProductImage, ProductTitle, ProductButtons} from "../components";
-import '../styles/custom-styles.css'
+import {
+  ProductCard,
+  ProductImage,
+  ProductTitle,
+  ProductButtons,
+} from "../components";
 
-const product = {
-  id: "1",
-  title: "Coffe Mug - Compound",
-  img: "./coffee-mug.png",
-};
+import "../styles/custom-styles.css";
+import { useShoppingCart } from '../hooks/useShoppingCart';
+
+
+
+
+
 
 export const ShoppingPage = () => {
+
+  const {productos, shoppingCart, onProductCountChange } = useShoppingCart();
+ 
+
   return (
-    <div >
+    <div>
       <h1>Shopping Store</h1>
       <hr />
       <div
@@ -18,24 +28,32 @@ export const ShoppingPage = () => {
           flexWrap: "wrap",
         }}
       >
-        <ProductCard product={product}>
-          <ProductImage img={product.img} />
-          <ProductTitle title="hola que tal" />
-          <ProductButtons />
-        </ProductCard>
-
-        <ProductCard product={product} className="bg-dark text-bold">
-          <ProductImage className='custom-image'/>
-          <ProductTitle className="text-white "/>
-          <ProductButtons className="custom-buttons" />
-        </ProductCard>
-
-        <ProductCard product={product} style={{backgroundColor: '#70d1f8', textAlign:'center'}}>
-          <ProductImage />
-          <ProductTitle />
-          <ProductButtons style={{display: 'flex', justifyContent: 'center'}} />
-        </ProductCard>
+        {productos.map((product) => {
+          return (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onChange={onProductCountChange}
+              value={shoppingCart[product.id]?.count || 0}
+            >
+              <ProductImage className="custom-image" />
+              <ProductTitle />
+              <ProductButtons />
+            </ProductCard>
+          );
+        })}
       </div>
+
+      <div className="shoping-cart">
+        {Object.entries(shoppingCart).map(([key, product]) => (
+          <ProductCard onChange={ onProductCountChange } key={key} style={{ width: "100px" }} product={product} value={product.count}>
+            <ProductImage className="custom-image" />
+            <ProductButtons />
+          </ProductCard>
+        ))}
+      </div>
+
+  
     </div>
   );
 };
